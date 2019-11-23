@@ -1,9 +1,10 @@
+let turn = true;
+
 const gameboard = {
     start: function () {
         let start = document.getElementById('start');
         let mark = document.getElementsByClassName('tile');
         let status = document.getElementById('status');
-        let playerTurn = 1;
 
         start.addEventListener('click', function () {
             for (let i = 0; i < mark.length; i++) {
@@ -12,10 +13,9 @@ const gameboard = {
                 status.style.color = "white";
                 players.playerOneScore = [];
                 players.playerTwoScore = [];
-                if (playerTurn === 1) {
+                if (turn === true) {
                     status.innerHTML = players.name()[0] + "'s turn";
-                    playerTurn = 2;
-                } else if (playerTurn === 2) {
+                } else if (turn === false) {
                     status.innerHTML = players.name()[1] + "'s turn";
                     playerTurn = 1;
                 }
@@ -26,27 +26,34 @@ const gameboard = {
     playTurn: function () {
         let mark = document.getElementsByClassName('tile');
         let status = document.getElementById('status');
-        let playerTurn = 1;
 
         for (let i = 0; i < mark.length; i++) {
             mark[i].addEventListener('click', function () {
                 let id = this.id;
 
-                if (playerTurn === 1 && mark[i].innerHTML === "") {
+                if (turn === true && mark[i].innerHTML === "") {
                     status.innerHTML = players.name()[1] + "'s turn";
                     mark[i].innerHTML = "X";
                     players.playerOneScore.push(id);
                     gameboard.winner();
-                    return playerTurn = 2;
-                } else if (playerTurn === 2 && mark[i].innerHTML === "") {
+                    gameboard.turn();
+                } else if (turn === false && mark[i].innerHTML === "") {
                     status.innerHTML = players.name()[0] + "'s turn";
                     mark[i].innerHTML = "O";
                     players.playerTwoScore.push(id);
                     gameboard.winner();
-                    return playerTurn = 1;
+                    gameboard.turn();
                 }
             });
         }
+    },
+    turn: function () {
+        if (turn === true) {
+            turn = false
+        } else if (turn === false) {
+            turn = true
+        }
+        return turn;
     },
     winner: function () {
         let p1Score = players.playerOneScore;
